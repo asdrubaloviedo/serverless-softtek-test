@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Person",
+  "type": "object",
+  "required": ["nombre", "fecha_nacimiento", "peso", "genero"],
+  "properties": {
+    "nombre": {
+      "type": "string",
+      "description": "Nombre de la persona",
+      "default": ""
+    },
+    "fecha_nacimiento": {
+      "type": "string",
+      "description": "",
+      "default": ""
+    },
+    "peso": {
+      "type": "number",
+      "description": "",
+      "default": ""
+    },
+    "genero": {
+      "type": "string",
+      "description": "",
+      "default": ""
+    }
+  }
+}
