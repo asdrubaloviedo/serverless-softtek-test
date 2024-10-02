@@ -1,9 +1,12 @@
-const AWS = require('aws-sdk');
+const {
+  APIGatewayClient,
+  GetExportCommand
+} = require('@aws-sdk/client-api-gateway');
 const express = require('express');
 const serverless = require('serverless-http');
 const swaggerUI = require('swagger-ui-express');
 
-var apigateway = new AWS.APIGateway({ apiVersion: '2015-07-09' });
+const apigateway = new APIGatewayClient({});
 
 const app = express();
 
@@ -11,22 +14,31 @@ module.exports.handler = async (event, context) => {
   const apiId = event.requestContext.apiId;
   const stage = event.requestContext.stage;
 
-  var params = {
+  const params = {
     exportType: 'swagger',
     restApiId: apiId,
     stageName: stage,
     accepts: 'application/json'
   };
 
-  var getExportPromise = await apigateway.getExport(params).promise();
+  try {
+    const command = new GetExportCommand(params);
+    const getExportPromise = await apigateway.send(command);
 
-  var swaggerJson = JSON.parse(getExportPromise.body);
+    const swaggerJson = JSON.parse(getExportPromise.body);
 
-  delete swaggerJson['paths']['/api-docs/{proxy+}'];
-  delete swaggerJson['paths']['/api-docs'];
+    delete swaggerJson.paths['/api-docs/{proxy+}'];
+    delete swaggerJson.paths['/api-docs'];
 
-  app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJson));
-  const handler = serverless(app);
-  const ret = await handler(event, context);
-  return ret;
+    app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJson));
+    const handler = serverless(app);
+    const ret = await handler(event, context);
+    return ret;
+  } catch (error) {
+    console.error('Error retrieving API Gateway export:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Failed to retrieve API documentation' })
+    };
+  }
 };

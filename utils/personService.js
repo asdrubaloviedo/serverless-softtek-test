@@ -1,4 +1,10 @@
-const aws = require('aws-sdk');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
+const {
+  DynamoDBDocumentClient,
+  GetCommand,
+  PutCommand
+} = require('@aws-sdk/lib-dynamodb');
+
 const personTable = 'SofttekTable';
 
 let dynamoDbClient = null;
@@ -7,39 +13,36 @@ const connect = () => {
   if (!dynamoDbClient) {
     const isTest = process.env.JEST_WORKER_ID;
     const config = {
-      convertEmptyValues: true,
+      region: 'us-east-1',
       ...(isTest && {
         endpoint: 'http://localhost:8000',
-        sslEnabled: false,
-        region: 'local-env'
+        sslEnabled: false
       })
     };
-    dynamoDbClient = new aws.DynamoDB.DocumentClient(config);
+    dynamoDbClient = new DynamoDBClient(config);
   }
-  return dynamoDbClient;
+  return DynamoDBDocumentClient.from(dynamoDbClient);
 };
 
 const getPersonById = async (personId) => {
   const dynamodb = connect();
-  const params = {
+  const command = new GetCommand({
     TableName: personTable,
-    Key: {
-      pk: personId
-    }
-  };
+    Key: { pk: personId }
+  });
 
-  const { Item: item } = await dynamodb.get(params).promise();
+  const { Item: item } = await dynamodb.send(command);
   if (!item) return null;
   return item;
 };
 
 const createPerson = async (body) => {
   const dynamodb = connect();
-  var params = {
+  const command = new PutCommand({
     TableName: personTable,
     Item: body
-  };
-  return await dynamodb.put(params).promise();
+  });
+  await dynamodb.send(command);
 };
 
 module.exports = {

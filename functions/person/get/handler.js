@@ -1,4 +1,3 @@
-const aws = require('aws-sdk');
 const { formatResponse } = require('../../../utils/formatResponse');
 const { getPersonById } = require('../../../utils/personService');
 
@@ -14,6 +13,7 @@ const get = async (event) => {
     if (!item) return formatResponse(403, { error: 'Person not found' });
     return formatResponse(200, item);
   } catch (error) {
+    console.error('Error retrieving person:', error); // Agregado para depuración
     return formatResponse(500, { error: 'Error retrieving person' });
   }
 };
