@@ -1,0 +1,67 @@
+---
+swagger: '2.0'
+info:
+  version: '1.0'
+  title: 'serverless-swagger-ui'
+schemes:
+  - 'https'
+paths:
+  /orders:
+    get:
+      produces:
+        - 'application/json'
+      parameters:
+        - name: 'orderDate'
+          in: 'query'
+          required: false
+          type: 'string'
+        - name: 'userid'
+          in: 'query'
+          required: false
+          type: 'string'
+      responses:
+        '200':
+          description: '200 response'
+          schema:
+            $ref: '#/definitions/ordersResponse'
+definitions:
+  ordersDataObject:
+    type: 'object'
+    properties:
+      user:
+        type: 'string'
+      shippingAddress:
+        type: 'string'
+      invoiceAddress:
+        type: 'string'
+      orderDate:
+        type: 'string'
+        format: 'date'
+    title: 'Orders Data Object'
+  ordersQueryParameters:
+    type: 'object'
+    properties:
+      userid:
+        type: 'string'
+      orderDate:
+        type: 'string'
+        format: 'date'
+    title: 'Orders Query Parameters'
+  ordersResponse:
+    type: 'object'
+    properties:
+      orders:
+        type: 'array'
+        items:
+          $ref: '#/definitions/ordersResponseObject'
+      queryParameters:
+        $ref: '#/definitions/ordersQueryParameters'
+    title: 'Orders Response'
+  ordersResponseObject:
+    type: 'object'
+    properties:
+      orderId:
+        type: 'number'
+      data:
+        $ref: '#/definitions/ordersDataObject'
+    title: 'Orders Response Object'
