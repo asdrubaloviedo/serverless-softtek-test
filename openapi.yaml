@@ -1,0 +1,62 @@
+openapi: 3.0.0
+info:
+  description: Prueba tecnica para
+  version: 1.0.0
+  title: Prueba tecnica para Softtek
+
+paths:
+  /person/search:
+    get:
+      summary: Realiza búsqueda de persona por nombre
+      description: Lista las personas por nombre tomando el StarWars API y traduce los campos al español
+      parameters:
+        - name: search
+          in: query
+          description: 'Nombre a buscar'
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Operación correcta
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Person'
+        '500':
+          description: Error de servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Person:
+      type: object
+      required:
+        - nombre
+        - peso
+        - fecha_nacimiento
+        - genero
+        - pk
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+        nombre:
+          type: string
+        peso:
+          type: number
+        genero:
+          type: string
+          enum:
+            - male
+            - female
+        fecha_nacimiento:
+          type: string
+    Error:
+      type: object
+      properties:
+        statusCode:
+          description: Código de error
+          type: string
