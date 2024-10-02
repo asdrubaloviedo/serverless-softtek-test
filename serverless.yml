@@ -14,9 +14,36 @@ provider:
             - 'apigateway:GET'
           Resource: 'arn:aws:apigateway:us-east-1::/restapis/09lipp79da/stages/dev/exports/swagger'
 
+plugins:
+  - serverless-auto-swagger
+  - serverless-offline
+
+custom:
+  autoswagger:
+    basePath: '/dev'
+    title: 'Softtek technical test'
+    apiType: 'http'
+    typefiles: ['./types/api-types.d.ts']
+package:
+  individually: true
+  patterns:
+    - '!*/**'
+    - '!*.zip'
+    - '!node_modules/**'
+
 functions:
   search:
     handler: functions/person/search/handler.search
+    package:
+      patterns:
+        - 'functions/person/search/handler.js'
+        - 'utils/*.js'
+        - '!*.zip'
+        - '!node_modules/**'
+    # layers:
+    #   - arn:aws:lambda:us-east-1:565700762908:layer:Softtek-dep-layer:3
+    layers:
+      - !Ref BaseLambdaLayer
     events:
       - http:
           path: search
@@ -41,6 +68,14 @@ functions:
           cors: true
   save:
     handler: functions/person/save/handler.save
+    package:
+      patterns:
+        - 'functions/person/save/handler.js'
+        - '!*.zip'
+        - '!node_modules/**'
+        - 'utils/*.js'
+    layers:
+      - !Ref BaseLambdaLayer
     events:
       - http:
           path: person
@@ -52,6 +87,14 @@ functions:
           bodyType: Person
   getPerson:
     handler: functions/person/get/handler.get
+    package:
+      patterns:
+        - 'functions/person/get/handler.js'
+        - '!*.zip'
+        - '!node_modules/**'
+        - 'utils/*.js'
+    layers:
+      - !Ref BaseLambdaLayer
     events:
       - http:
           path: person/{id}
@@ -64,6 +107,33 @@ functions:
           reponse:
             200:
               description: 'success'
+
+  # swagger:
+  #   handler: swagger/index.handler
+  #   package:
+  #     patterns:
+  #       - 'swagger/index.js'
+  #       - '!*.zip'
+  #       - '!node_modules/**'
+  #       - 'utils/*.js'
+  #   layers:
+  #     - !Ref BaseLambdaLayer
+  #   events:
+  #     - http:
+  #         path: api-docs
+  #         method: GET
+  #         cors: true
+layers:
+  base:
+    name: prd-dependencies
+    description: layer for nodejs prd dependencies
+    licenseInfo: MIT
+    compatibleRuntimes:
+      - nodejs18.x
+    compatibleArchitectures:
+      - x86_64
+    package:
+      artifact: nodejs-layer.zip
 
 resources:
   Resources:
