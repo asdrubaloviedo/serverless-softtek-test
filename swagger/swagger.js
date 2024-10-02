@@ -105,7 +105,7 @@
         },
         "peso": {
           "title": "Person.peso",
-          "type": "string"
+          "type": "number"
         },
         "fecha_nacimiento": {
           "title": "Person.fecha_nacimiento",

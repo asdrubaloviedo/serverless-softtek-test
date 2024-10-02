@@ -17,7 +17,7 @@ provider:
       statements:
         - Effect: Allow
           Action: 'dynamodb:*'
-          Resource: arn:aws:dynamodb:us-east-1:565700762908:table/SofttekTable
+          Resource: arn:aws:dynamodb:us-east-1:471112938813:table/SofttekTable
         - Effect: Allow
           Action:
             - 'apigateway:GET'
