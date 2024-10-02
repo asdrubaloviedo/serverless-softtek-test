@@ -1,5 +1,14 @@
 service: api
 
+# Ejecuta el workflow en cualquier push o pull request a la rama principal
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 provider:
   name: aws
   runtime: nodejs18.x
