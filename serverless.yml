@@ -1,0 +1,82 @@
+service: api
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action: 'dynamodb:*'
+          Resource: arn:aws:dynamodb:us-east-1:565700762908:table/SofttekTable
+        - Effect: Allow
+          Action:
+            - 'apigateway:GET'
+          Resource: 'arn:aws:apigateway:us-east-1::/restapis/09lipp79da/stages/dev/exports/swagger'
+
+functions:
+  search:
+    handler: functions/person/search/handler.search
+    events:
+      - http:
+          path: search
+          method: GET
+          request:
+            parameters:
+              queryStringParameters:
+                search:
+                  required: true
+                  type: string
+                  description: 'Nombre a filtrar'
+          responseData:
+            200:
+              description: 'Datos formateados de una persona'
+              bodyType: Person
+          queryStringParameters:
+            search:
+              required: true
+              type: string
+              description: 'Nombre a filtrar'
+
+          cors: true
+  save:
+    handler: functions/person/save/handler.save
+    events:
+      - http:
+          path: person
+          method: POST
+          request:
+            schemas:
+              application/json: ${file(schemas/personSchema.json)}
+          cors: true
+          bodyType: Person
+  getPerson:
+    handler: functions/person/get/handler.get
+    events:
+      - http:
+          path: person/{id}
+          method: GET
+          request:
+            parameters:
+              paths:
+                id: true
+          cors: true
+          reponse:
+            200:
+              description: 'success'
+
+resources:
+  Resources:
+    SofttekTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: SofttekTable
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
