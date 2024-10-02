@@ -23,7 +23,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-          cache: 'npm' # Agregar caching para npm
+          # cache: 'npm' # Agregar caching para npm
 
       # 3. Instalar dependencias
       - name: Install dependencies
