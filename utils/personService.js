@@ -11,29 +11,26 @@ const connect = () => {
       ...(isTest && {
         endpoint: 'http://localhost:8000',
         sslEnabled: false,
-        region: 'local-env',
-      }),
+        region: 'local-env'
+      })
     };
     dynamoDbClient = new aws.DynamoDB.DocumentClient(config);
   }
   return dynamoDbClient;
 };
 
-
 const getPersonById = async (personId) => {
   const dynamodb = connect();
   const params = {
     TableName: personTable,
     Key: {
-      pk: personId,
-    },
+      pk: personId
+    }
   };
 
   const { Item: item } = await dynamodb.get(params).promise();
-  if (!item) throw new Error('Error saving person');
+  if (!item) return null;
   return item;
-
-
 };
 
 const createPerson = async (body) => {

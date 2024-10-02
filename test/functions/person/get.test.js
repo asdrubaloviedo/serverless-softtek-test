@@ -30,6 +30,36 @@ describe('Get function', () => {
     const { body: bodyPerson } = await get(event);
     expect(typeof bodyPerson).toBe('string');
     expect(JSON.parse(bodyPerson).pk).toBe(data.pk);
+  });
 
+  it('should return 403 if person not found', async () => {
+    const event = {
+      pathParameters: { id: 'nonexistent-id' }
+    };
+
+    const { statusCode, body } = await get(event);
+
+    expect(statusCode).toBe(403);
+    expect(JSON.parse(body).error).toBe('Person not found');
+  });
+
+  it('should return 400 for invalid ID format', async () => {
+    const event = {
+      pathParameters: { id: null }
+    };
+
+    const { statusCode, body } = await get(event);
+
+    expect(statusCode).toBe(400);
+    expect(JSON.parse(body).error).toBe('Invalid or missing ID');
+  });
+
+  it('should return 400 for missing pathParameters', async () => {
+    const event = {};
+
+    const { statusCode, body } = await get(event);
+
+    expect(statusCode).toBe(400);
+    expect(JSON.parse(body).error).toBe('Invalid or missing ID');
   });
 });
