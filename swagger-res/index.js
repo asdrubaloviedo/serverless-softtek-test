@@ -31,10 +31,13 @@ module.exports.handler = async (event, context) => {
     // Log the raw response body for debugging
     console.log('Raw response:', getExportPromise.body);
 
+    // Convert Uint8Array to string
+    const responseBody = new TextDecoder('utf-8').decode(getExportPromise.body);
+
     let swaggerJson;
     try {
       // Attempt to parse the JSON response
-      swaggerJson = JSON.parse(getExportPromise.body);
+      swaggerJson = JSON.parse(responseBody);
     } catch (jsonError) {
       console.error('Failed to parse JSON:', jsonError);
       return {
