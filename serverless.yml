@@ -16,7 +16,11 @@ provider:
     role:
       statements:
         - Effect: Allow
-          Action: 'dynamodb:*'
+          Action:
+            - 'dynamodb:GetItem'
+            - 'dynamodb:PutItem'
+            - 'dynamodb:UpdateItem'
+            - 'dynamodb:DeleteItem'
           Resource: arn:aws:dynamodb:us-east-1:471112938813:table/SofttekTable
         - Effect: Allow
           Action:
@@ -24,19 +28,29 @@ provider:
           Resource: 'arn:aws:apigateway:us-east-1::/restapis/09lipp79da/stages/dev/exports/swagger'
 
 plugins:
+  # Genera automáticamente un archivo Swagger para documentar las API.
   - serverless-auto-swagger
+  # Permite ejecutar el servicio localmente, simulando el comportamiento de AWS.
   - serverless-offline
 
 custom:
+  # Configura el plugin serverless-auto-swagger
   autoswagger:
+    # Define la base path de la API.
     basePath: '/dev'
+    # El título del archivo Swagger.
     title: 'Softtek technical test'
+    # Tipo de API, en este caso HTTP.
     apiType: 'http'
+    # Archivos de tipos TypeScript para Swagger.
     typefiles: ['./types/api-types.d.ts']
+
+# Controla cómo se empaqueta el servicio
 package:
+  # Cada función se empaqueta individualmente en lugar de hacerlo como un paquete global
   individually: true
+  # Define los archivos o carpetas que se excluirán del empaquetado
   patterns:
-    - '!*/**'
     - '!*.zip'
     - '!node_modules/**'
 
@@ -44,13 +58,11 @@ functions:
   search:
     handler: functions/person/search/handler.search
     package:
+      # Incluye solo los archivos necesarios para esta función
       patterns:
         - 'functions/person/search/handler.js'
         - 'utils/*.js'
-        - '!*.zip'
-        - '!node_modules/**'
-    # layers:
-    #   - arn:aws:lambda:us-east-1:565700762908:layer:Softtek-dep-layer:3
+    # Se utiliza una capa Lambda para compartir dependencias comunes
     layers:
       - !Ref BaseLambdaLayer
     events:
@@ -68,21 +80,16 @@ functions:
             200:
               description: 'Datos formateados de una persona'
               bodyType: Person
-          queryStringParameters:
-            search:
-              required: true
-              type: string
-              description: 'Nombre a filtrar'
-
           cors: true
+
   save:
     handler: functions/person/save/handler.save
     package:
+      # Incluye solo los archivos necesarios para esta función
       patterns:
         - 'functions/person/save/handler.js'
-        - '!*.zip'
-        - '!node_modules/**'
         - 'utils/*.js'
+    # Se utiliza una capa Lambda para compartir dependencias comunes
     layers:
       - !Ref BaseLambdaLayer
     events:
@@ -90,18 +97,20 @@ functions:
           path: person
           method: POST
           request:
+            #  Define un esquema de validación para las solicitudes usando un archivo JSON.
             schemas:
               application/json: ${file(schemas/personSchema.json)}
           cors: true
           bodyType: Person
+
   getPerson:
     handler: functions/person/get/handler.get
     package:
+      # Incluye solo los archivos necesarios para esta función
       patterns:
         - 'functions/person/get/handler.js'
-        - '!*.zip'
-        - '!node_modules/**'
         - 'utils/*.js'
+    # Se utiliza una capa Lambda para compartir dependencias comunes
     layers:
       - !Ref BaseLambdaLayer
     events:
@@ -116,15 +125,15 @@ functions:
           reponse:
             200:
               description: 'success'
-
+  # Función para servir la documentación Swagger en el endpoint /api-docs
   swagger:
-    handler: swagger/index.handler
+    handler: swagger-res/index.handler
     package:
+      # Incluye solo los archivos necesarios para esta función
       patterns:
         - 'swagger/index.js'
-        - '!*.zip'
-        - '!node_modules/**'
         - 'utils/*.js'
+    # Se utiliza una capa Lambda para compartir dependencias comunes
     layers:
       - !Ref BaseLambdaLayer
     events:
@@ -132,6 +141,8 @@ functions:
           path: api-docs
           method: GET
           cors: true
+
+# Define una capa Lambda reutilizable con las dependencias Node.js comunes. Mejora la eficiencia del despliegue.
 layers:
   base:
     name: prd-dependencies

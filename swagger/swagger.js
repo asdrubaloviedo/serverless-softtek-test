@@ -17,15 +17,7 @@
         "produces": [
           "application/json"
         ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "search",
-            "type": "string",
-            "description": "Nombre a filtrar",
-            "required": true
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "Datos formateados de una persona",
