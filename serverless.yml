@@ -25,7 +25,7 @@ provider:
         - Effect: Allow
           Action:
             - 'apigateway:GET'
-          Resource: 'arn:aws:apigateway:us-east-1::/restapis/09lipp79da/stages/dev/exports/swagger'
+          Resource: 'arn:aws:apigateway:us-east-1::/restapis/*/stages/*/exports/swagger'
 
 plugins:
   # Genera automáticamente un archivo Swagger para documentar las API.
