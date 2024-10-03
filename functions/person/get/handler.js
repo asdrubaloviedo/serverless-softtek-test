@@ -9,7 +9,6 @@ const get = async (event) => {
   const { id } = event.pathParameters;
   try {
     const item = await getPersonById(id);
-    console.log('item: ', item);
     if (!item) return formatResponse(403, { error: 'Person not found' });
     return formatResponse(200, item);
   } catch (error) {
