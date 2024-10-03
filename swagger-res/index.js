@@ -5,17 +5,15 @@ const {
 const express = require('express');
 const serverless = require('serverless-http');
 const swaggerUI = require('swagger-ui-express');
+const { TextDecoder } = require('util'); // Agregado para decodificar el Uint8Array
 
 const apigateway = new APIGatewayClient({});
+
 const app = express();
 
 module.exports.handler = async (event, context) => {
   const apiId = event.requestContext.apiId;
   const stage = event.requestContext.stage;
-
-  // Log the API ID and stage for debugging
-  console.log('API ID:', apiId);
-  console.log('Stage:', stage);
 
   const params = {
     exportType: 'swagger',
@@ -28,16 +26,16 @@ module.exports.handler = async (event, context) => {
     const command = new GetExportCommand(params);
     const getExportPromise = await apigateway.send(command);
 
-    // Log the raw response body and its type for debugging
+    // Log the raw response body for debugging
     console.log('Raw response:', getExportPromise.body);
     console.log('Response type:', typeof getExportPromise.body);
 
     // Convert Uint8Array to string
     const responseBody = new TextDecoder('utf-8').decode(getExportPromise.body);
 
+    // Ahora intenta parsear la respuesta JSON
     let swaggerJson;
     try {
-      // Attempt to parse the JSON response
       swaggerJson = JSON.parse(responseBody);
     } catch (jsonError) {
       console.error('Failed to parse JSON:', jsonError);
@@ -49,11 +47,11 @@ module.exports.handler = async (event, context) => {
       };
     }
 
-    // Remove unwanted paths from Swagger JSON
+    // Eliminar rutas no deseadas de Swagger JSON
     delete swaggerJson.paths['/api-docs/{proxy+}'];
     delete swaggerJson.paths['/api-docs'];
 
-    // Serve the Swagger UI with the valid Swagger JSON
+    // Sirve Swagger UI con el JSON válido de Swagger
     app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJson));
     const handler = serverless(app);
     const ret = await handler(event, context);
