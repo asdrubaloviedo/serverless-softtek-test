@@ -10,10 +10,14 @@ const { TextDecoder } = require('util');
 const apigateway = new APIGatewayClient({});
 const app = express();
 
-// Endpoint para servir la documentación Swagger
 app.get('/api-docs', async (req, res) => {
-  const apiId = req.context.apiId; // Asegúrate de que estás obteniendo el apiId correctamente
-  const stage = req.context.stage; // Asegúrate de que estás obteniendo el stage correctamente
+  // Extraer apiId y stage del objeto event que se pasa a la función manejadora
+  const apiId = req.query.apiId; // Debes pasar el apiId como parámetro de consulta
+  const stage = req.query.stage; // Debes pasar el stage como parámetro de consulta
+
+  if (!apiId || !stage) {
+    return res.status(400).json({ error: 'apiId and stage are required' });
+  }
 
   const params = {
     exportType: 'swagger',
