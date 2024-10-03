@@ -8,6 +8,10 @@ jest.mock('axios', () => ({
 const axios = require('axios');
 const { json } = require('stream/consumers');
 
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
 describe('Get function', () => {
   it('should return a person with ID', async () => {
     const expectedData = {

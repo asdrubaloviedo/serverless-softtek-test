@@ -31,9 +31,13 @@ const getPersonById = async (personId) => {
     Key: { pk: personId }
   });
 
-  const { Item: item } = await dynamodb.send(command);
-  if (!item) return null;
-  return item;
+  try {
+    const { Item: item } = await dynamodb.send(command);
+    if (!item) return null;
+    return item;
+  } catch (error) {
+    throw new Error('Error retrieving person'); // Lanzamos un error para manejarlo en el handler
+  }
 };
 
 const createPerson = async (body) => {

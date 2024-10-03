@@ -8,11 +8,6 @@ const save = async (event, context) => {
   let body;
   try {
     body = JSON.parse(event.body);
-
-    // Convertir peso a number si existe y es un string
-    if (body.peso) {
-      body.peso = Number(body.peso);
-    }
   } catch (error) {
     return formatResponse(400, { error: 'Invalid request body' });
   }
