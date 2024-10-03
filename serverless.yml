@@ -117,21 +117,21 @@ functions:
             200:
               description: 'success'
 
-  # swagger:
-  #   handler: swagger/index.handler
-  #   package:
-  #     patterns:
-  #       - 'swagger/index.js'
-  #       - '!*.zip'
-  #       - '!node_modules/**'
-  #       - 'utils/*.js'
-  #   layers:
-  #     - !Ref BaseLambdaLayer
-  #   events:
-  #     - http:
-  #         path: api-docs
-  #         method: GET
-  #         cors: true
+  swagger:
+    handler: swagger/index.handler
+    package:
+      patterns:
+        - 'swagger/index.js'
+        - '!*.zip'
+        - '!node_modules/**'
+        - 'utils/*.js'
+    layers:
+      - !Ref BaseLambdaLayer
+    events:
+      - http:
+          path: api-docs
+          method: GET
+          cors: true
 layers:
   base:
     name: prd-dependencies
