@@ -5,8 +5,13 @@ jest.mock('axios', () => ({
   get: jest.fn()
 }));
 
+// Mock de la función getPersonById
+jest.mock('../../../utils/personService', () => ({
+  getPersonById: jest.fn()
+}));
+
 const axios = require('axios');
-const { json } = require('stream/consumers');
+const { getPersonById } = require('../../../utils/personService');
 
 afterEach(() => {
   jest.restoreAllMocks();
@@ -31,12 +36,21 @@ describe('Get function', () => {
       pathParameters: { id: data.pk }
     };
 
+    // Mock de getPersonById para devolver el dato esperado
+    getPersonById.mockResolvedValue({
+      pk: data.pk,
+      ...expectedData
+    });
+
     const { body: bodyPerson } = await get(event);
     expect(typeof bodyPerson).toBe('string');
     expect(JSON.parse(bodyPerson).pk).toBe(data.pk);
   });
 
   it('should return 403 if person not found', async () => {
+    // Mock de getPersonById para que devuelva null
+    getPersonById.mockResolvedValue(null);
+
     const event = {
       pathParameters: { id: 'nonexistent-id' }
     };
