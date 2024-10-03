@@ -5,15 +5,15 @@ const {
 const express = require('express');
 const serverless = require('serverless-http');
 const swaggerUI = require('swagger-ui-express');
-const { TextDecoder } = require('util'); // Agregado para decodificar el Uint8Array
+const { TextDecoder } = require('util');
 
 const apigateway = new APIGatewayClient({});
-
 const app = express();
 
-module.exports.handler = async (event, context) => {
-  const apiId = event.requestContext.apiId;
-  const stage = event.requestContext.stage;
+// Endpoint para servir la documentación Swagger
+app.get('/api-docs', async (req, res) => {
+  const apiId = req.context.apiId; // Asegúrate de que estás obteniendo el apiId correctamente
+  const stage = req.context.stage; // Asegúrate de que estás obteniendo el stage correctamente
 
   const params = {
     exportType: 'swagger',
@@ -25,42 +25,31 @@ module.exports.handler = async (event, context) => {
   try {
     const command = new GetExportCommand(params);
     const getExportPromise = await apigateway.send(command);
-
-    // Log the raw response body for debugging
-    console.log('Raw response:', getExportPromise.body);
-    console.log('Response type:', typeof getExportPromise.body);
-
-    // Convert Uint8Array to string
     const responseBody = new TextDecoder('utf-8').decode(getExportPromise.body);
 
-    // Ahora intenta parsear la respuesta JSON
     let swaggerJson;
     try {
       swaggerJson = JSON.parse(responseBody);
     } catch (jsonError) {
       console.error('Failed to parse JSON:', jsonError);
-      return {
-        statusCode: 500,
-        body: JSON.stringify({
-          error: 'Invalid JSON response from API Gateway'
-        })
-      };
+      return res
+        .status(500)
+        .json({ error: 'Invalid JSON response from API Gateway' });
     }
 
-    // Eliminar rutas no deseadas de Swagger JSON
+    // Eliminar las rutas que no son necesarias
     delete swaggerJson.paths['/api-docs/{proxy+}'];
     delete swaggerJson.paths['/api-docs'];
 
-    // Sirve Swagger UI con el JSON válido de Swagger
-    app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerJson));
-    const handler = serverless(app);
-    const ret = await handler(event, context);
-    return ret;
+    // Sirve Swagger UI
+    app.use('/api-docs/ui', swaggerUI.serve, swaggerUI.setup(swaggerJson));
+    res.redirect('/api-docs/ui'); // Redirige a la UI de Swagger
   } catch (error) {
     console.error('Error retrieving API Gateway export:', error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({ error: 'Failed to retrieve API documentation' })
-    };
+    return res
+      .status(500)
+      .json({ error: 'Failed to retrieve API documentation' });
   }
-};
+});
+
+module.exports.handler = serverless(app);
