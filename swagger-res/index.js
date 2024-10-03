@@ -28,8 +28,9 @@ module.exports.handler = async (event, context) => {
     const command = new GetExportCommand(params);
     const getExportPromise = await apigateway.send(command);
 
-    // Log the raw response body for debugging
+    // Log the raw response body and its type for debugging
     console.log('Raw response:', getExportPromise.body);
+    console.log('Response type:', typeof getExportPromise.body);
 
     // Convert Uint8Array to string
     const responseBody = new TextDecoder('utf-8').decode(getExportPromise.body);
