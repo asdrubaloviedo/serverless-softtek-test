@@ -26,8 +26,8 @@ provider:
           Action:
             - 'apigateway:GET'
             - 'apigateway:GETExport' # Permiso adicional para obetenr la doc del swagger
-          Resource: arn:aws:apigateway:us-east-1::/restapis/tarpy1226l/stages/dev/*
-          # Resource: '*'
+          # Resource: arn:aws:apigateway:us-east-1::/restapis/tarpy1226l/stages/dev/*
+          Resource: '*'
 
 plugins:
   # Genera automáticamente un archivo Swagger para documentar las API.
