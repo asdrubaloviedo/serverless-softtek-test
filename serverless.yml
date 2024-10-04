@@ -152,7 +152,6 @@ functions:
           method: GET
           cors: true
           private: false # Permitir acceso sin autenticación
-          authorizer: aws_iam # Usar un authorizer IAM
 
 # Define una capa Lambda reutilizable con las dependencias Node.js comunes. Mejora la eficiencia del despliegue.
 layers:
