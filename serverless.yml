@@ -148,7 +148,7 @@ functions:
       - !Ref BaseLambdaLayer
     events:
       - http:
-          path: swagger
+          path: api-docs
           method: GET
           cors: true
           private: false # Permitir acceso sin autenticación
