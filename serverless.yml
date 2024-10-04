@@ -32,6 +32,10 @@ provider:
               'arn:aws:apigateway:us-east-1::/restapis/tarpy1226l/exports/*'
             ]
           # Resource: '*'
+        - Effect: Allow
+          Action:
+            - 'execute-api:Invoke'
+          Resource: 'arn:aws:execute-api:us-east-1:471112938813:tarpy1226l/*'
 
 plugins:
   # Genera automáticamente un archivo Swagger para documentar las API.
@@ -144,7 +148,7 @@ functions:
       - !Ref BaseLambdaLayer
     events:
       - http:
-          path: api-docs
+          path: swagger
           method: GET
           cors: true
 

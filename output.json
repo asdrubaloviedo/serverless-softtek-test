@@ -1,7 +1,7 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "version" : "2024-10-04T15:54:32Z",
+    "version" : "2024-10-04T16:10:49Z",
     "title" : "dev-api"
   },
   "host" : "tarpy1226l.execute-api.us-east-1.amazonaws.com",
@@ -167,5 +167,14 @@
       },
       "title" : "Person"
     }
+  },
+  "x-amazon-apigateway-policy" : {
+    "Version" : "2012-10-17",
+    "Statement" : [ {
+      "Effect" : "Allow",
+      "Principal" : "*",
+      "Action" : "execute-api:Invoke",
+      "Resource" : "arn:aws:apigateway:us-east-1::/restapis/tarpy1226l/stages/dev/exports/*"
+    } ]
   }
 }
