@@ -1,6 +1,10 @@
 # Prueba tecnica Softtek
 
-Este proyecto esta desarrollado usando serverless framework, cuenta con un layer con las dependencias `nodejs-layer` este layer esta configurado en el `serverless.yml` y se sube automaticamente al hacer deploy.
+Este proyecto esta desarrollado para la empresa Softtek haciendo uso de serverless framework. Cuenta con las siguientes caracteristicas:
+1.- Un layer con las dependencias `nodejs-layer`
+2.- Pruebas unitarias con Jest
+3.- CI/CD haciendo uso de GitHub Actions donde se ejecutan las pruebas de Jest y se ejecuta el deploy a AWS
+4.- Documentacion de Swagger funcional a nivel local.
 
 ### Requerimientos
 
@@ -12,23 +16,23 @@ Este proyecto esta desarrollado usando serverless framework, cuenta con un layer
 
 API de prueba SWAPI: https://swapi.py4e.com/documentation
 
-### Ejecución de pruebas unitarias
+### Ejecución manual de pruebas unitarias
 
-El proyecto tiene configurado `jest` para ejecutar las pruebas, se dispone de los siguientes comandos:
+Este proyecto usa `jest` para realizar las pruebas, cuenta con los siguientes comandos:
 
-- Para ejecutar pruebas unitarias
+- Ejecucion de pruebas unitarias
 
 ```
 npm run test
 ```
 
-- Para ejecutar el coverage
+- Ejecucion de coverage
 
 ```
 npm run test:coverage
 ```
 
-### Hacer deploy del proyecto
+### Deploy manual del proyecto
 
 ```
 sls deploy
@@ -38,6 +42,14 @@ sls deploy
 
 ```
 sls offline start
+```
+
+Luego en el navegador ir a la ruta "http://localhost:3000/dev/swagger"
+
+### Integracion continua + pruebas + deploy
+
+```
+git push -u origin main
 ```
 
 ### Dependencias
