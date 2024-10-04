@@ -35,7 +35,7 @@ provider:
         - Effect: Allow
           Action:
             - 'execute-api:Invoke'
-          Resource: 'arn:aws:execute-api:us-east-1:471112938813:tarpy1226l/*' # Permitir invocar la API
+          Resource: '*' # Permitir invocar la API
 
 plugins:
   # Genera automáticamente un archivo Swagger para documentar las API.
