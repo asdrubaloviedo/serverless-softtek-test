@@ -152,6 +152,7 @@ functions:
           method: GET
           cors: true
           private: false # Permitir acceso sin autenticación
+          authorizer: none # Esto deshabilita la autenticación para esta ruta
 
 # Define una capa Lambda reutilizable con las dependencias Node.js comunes. Mejora la eficiencia del despliegue.
 layers:
