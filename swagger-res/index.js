@@ -12,8 +12,8 @@ const app = express();
 
 app.get('/api-docs', async (req, res) => {
   // Extraer apiId y stage del objeto event que se pasa a la función manejadora
-  const apiId = req.query.apiId; // Debes pasar el apiId como parámetro de consulta
-  const stage = req.query.stage; // Debes pasar el stage como parámetro de consulta
+  const apiId = req.query.apiId;
+  const stage = req.query.stage;
 
   if (!apiId || !stage) {
     return res.status(400).json({ error: 'apiId and stage are required' });
