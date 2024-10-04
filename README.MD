@@ -1,10 +1,10 @@
 # Prueba tecnica Softtek
 
 Este proyecto esta desarrollado para la empresa Softtek haciendo uso de serverless framework. Cuenta con las siguientes caracteristicas:
-1.- Un layer con las dependencias `nodejs-layer`
-2.- Pruebas unitarias con Jest
-3.- CI/CD haciendo uso de GitHub Actions donde se ejecutan las pruebas de Jest y se ejecuta el deploy a AWS
-4.- Documentacion de Swagger funcional a nivel local.
+1.- Un layer con las dependencias `nodejs-layer`.
+2.- Pruebas unitarias con Jest.
+3.- CI/CD haciendo uso de GitHub Actions donde se ejecutan las pruebas de Jest y se ejecuta el deploy a AWS.
+4.- Documentacion de Swagger.
 
 ### Requerimientos
 
@@ -45,6 +45,11 @@ sls offline start
 ```
 
 Luego en el navegador ir a la ruta "http://localhost:3000/dev/swagger"
+
+### Visualizar swagger online
+
+En el navegador luego de hacer el deploy se nos mostrara una ruta que termina en ".../dev/swagger",
+abrimos dicha ruta en el navegador
 
 ### Integracion continua + pruebas + deploy
 

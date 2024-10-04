@@ -10,10 +10,6 @@ const { TextDecoder } = require('util');
 const apigateway = new APIGatewayClient({});
 const app = express();
 
-// Define valores fijos para apiId y stage
-const apiId = 'tarpy1226l';
-const stage = 'dev';
-
 module.exports.handler = async (event, context) => {
   const params = {
     exportType: 'swagger',
