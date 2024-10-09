@@ -49,7 +49,7 @@ Luego en el navegador ir a la ruta "http://localhost:3000/dev/swagger"
 ### Visualizar swagger online
 
 En el navegador luego de hacer el deploy se nos mostrara una ruta que termina en ".../dev/swagger",
-abrimos dicha ruta en el navegador
+abrimos dicha ruta en el navegador.
 
 ### Integracion continua + pruebas + deploy
 
